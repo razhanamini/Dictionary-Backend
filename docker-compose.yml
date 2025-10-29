@@ -1,41 +1,17 @@
-version: '3.8'
 
 services:
   api:
     build: .
-    container_name: dictionaty-api
+    container_name: dictionaty-api-v1
     environment:
-      PORT: 3000
-      DB_HOST: postgres
-      DB_USER: postgres
-      DB_PASS: password
-      DB_NAME: wordsdb
-      DB_PORT: 5432
+      - PORT=3000
+      # Set your Neon connection string here. Consider moving this to a secure secrets store or .env.
+      - DATABASE_URL=postgresql://neondb_owner:npg_s4xKJM6ZXhUj@ep-frosty-frog-a46vupba-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
     ports:
       - "3000:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped 
-  postgres:
-    image: postgres:15
-    container_name: dictionaty-postgres
-    environment:
-      POSTGRES_DB: wordsdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d wordsdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
     restart: unless-stopped
 
-volumes:
-  postgres_data:
+# # Removed local postgres service; using Neon (managed) instead of a local Docker Postgres
+# volumes:
+#   postgres_data:
 

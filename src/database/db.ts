@@ -1,12 +1,17 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  console.error("Missing DATABASE_URL — set your Neon connection string in env");
+  process.exit(1);
+}
+
+// Use the connection string and enable SSL (adjust rejectUnauthorized in production)
 export const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'wordsdb',
-  password: process.env.DB_PASS || '',
-  port: Number(process.env.DB_PORT) || 5432,
+  connectionString,
+  ssl: { rejectUnauthorized: false },
 });

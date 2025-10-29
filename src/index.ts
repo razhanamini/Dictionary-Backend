@@ -3,7 +3,6 @@ import { pool } from "./database/db";
 import dotenv from "dotenv";
 import cors from "cors";
 
-dotenv.config();
 const app = express();
 
 app.use(express.json());
@@ -102,8 +101,6 @@ app.get("/word-of-the-day", async (_req: Request, res: Response) => {
   }
 });
 
-
-
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
   try {
@@ -115,8 +112,19 @@ app.get("/health", (req: Request, res: Response) => {
   }
 });
 
+// Replace immediate listen with a DB probe first
+async function startServer() {
+  try {
+    // Probe DB connection using the shared pool
+    await pool.query("SELECT 1");
+    const PORT = Number(process.env.PORT) || 3000;
+    app.listen(PORT, () =>
+      console.log(`Server running on http://localhost:${PORT}`)
+    );
+  } catch (err) {
+    console.error("Failed to connect to DB:", err);
+    process.exit(1);
+  }
+}
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+startServer();
