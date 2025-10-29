@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const connectionString = process.env.DATABASE_URL;
-
+const connectionString ="postgresql://neondb_owner:npg_s4xKJM6ZXhUj@ep-frosty-frog-a46vupba-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 if (!connectionString) {
   console.error("Missing DATABASE_URL — set your Neon connection string in env");
   process.exit(1);
